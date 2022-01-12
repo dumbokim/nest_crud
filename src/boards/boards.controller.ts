@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   ParseIntPipe,
   Patch,
@@ -23,6 +24,8 @@ import { BoardStatusValidationPipe } from './pipes/board-status-validation.pipe'
 @Controller('boards')
 @UseGuards(AuthGuard())
 export class BoardsController {
+  private logger = new Logger('BoardController');
+
   // boardsService: BoardsService;
 
   // constructor(boardsService: BoardsService) {
@@ -42,11 +45,13 @@ export class BoardsController {
   // }
   @Get()
   getAllBoards(): Promise<Board[]> {
+    // this.logger.verbose(`User ${user.user name}`);
     return this.boardsService.getAllBoards();
   }
 
   @Get('/user')
   getUserBoards(@GetUser() user: User): Promise<Board[]> {
+    this.logger.verbose(`User ${user.username} is trying to find boards`);
     return this.boardsService.getUserBoards(user);
   }
 
@@ -56,6 +61,8 @@ export class BoardsController {
     @Body() createBoardDto: CreateBoardDto,
     @GetUser() user: User,
   ): Promise<Board> {
+    this.logger.verbose(`User ${user.username} creating a new board. 
+    Payload: ${JSON.stringify(createBoardDto)}`);
     return this.boardsService.createBoard(createBoardDto, user);
   }
 
