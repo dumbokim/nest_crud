@@ -13,9 +13,9 @@ export class UserRepository extends Repository<User> {
     const { username, password } = authCredentialDto;
 
     const salt = await bcrypt.genSalt();
-    console.log('salt', salt);
+    // console.log('salt', salt);
     const hashedPassword = await bcrypt.hash(password, salt);
-    console.log('hashed', hashedPassword);
+    // console.log('hashed', hashedPassword);
 
     const user = this.create({
       username,
@@ -25,12 +25,13 @@ export class UserRepository extends Repository<User> {
     try {
       await this.save(user);
     } catch (error) {
+      console.log('err', error);
+
       if (error.code === '23505') {
         throw new ConflictException('Existing username');
       } else {
         throw new InternalServerErrorException();
       }
-      // console.log('err', error);
     }
   }
 }
